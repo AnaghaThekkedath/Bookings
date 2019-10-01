@@ -1,7 +1,5 @@
 {
     "calendarId":"btfhat044jqis9ojpbe13ofsa8@group.calendar.google.com",
-    "slots":[ "9:0","9:45","10:30","11:15","12:0","12:45","13:30","14:15","15:0","15:45","16:30","17:15" ],
     "tokenPath":"token.json",
-    "credentials":"credentials.json",
-    "scopes":["https://www.googleapis.com/auth/calendar"]
+    "credentials":"credentials.json"
 }

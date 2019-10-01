@@ -2,8 +2,8 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 const config = require('./config.json');
-
-
+const slots = [ "9:0","9:45","10:30","11:15","12:0","12:45","13:30","14:15","15:0","15:45","16:30","17:15" ]
+const SCOPES =["https://www.googleapis.com/auth/calendar"]
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
@@ -34,7 +34,7 @@ function authorize(credentials) {
 function getAccessToken(oAuth2Client) {
     const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: config.scope,
+    scope: SCOPES,
     });
     return new Promise((reject,resolve)=>{
         console.log('Authorize this app by visiting this url:', authUrl);
@@ -145,7 +145,7 @@ module.exports = {
             availableSlots = [],
             day = (new Date(year,month-1,date)).getDay();
         if(day===0||day===6) return availableSlots;
-        config.slots.forEach(slot => {
+        slots.forEach(slot => {
             if (!booked || !booked.appointments || !booked.appointments[slot]){  
                 let temp = slot.split(":"),
                     hours = parseInt(temp[0]),
@@ -172,8 +172,8 @@ module.exports = {
                 },
                 booked = events[i],
                 free = 0;
-                for (let j=0; j<config.slots.length; j++){
-                    if(!booked || !booked.appointments || !booked.appointments[config.slots[j]]) {
+                for (let j=0; j<slots.length; j++){
+                    if(!booked || !booked.appointments || !booked.appointments[slots[j]]) {
                         free = 1;
                         break;
                     }
@@ -214,6 +214,6 @@ module.exports = {
 
     checkValidSlot: (hours,minutes)=>{
         let slot = hours+":"+minutes;
-        return config.slots.findIndex(slot) !=-1;
+        return slots.findIndex(slot) !=-1;
     }
 };

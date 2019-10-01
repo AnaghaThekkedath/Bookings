@@ -11,13 +11,13 @@ app.get('/days',(req,res) => {
           googleapi.getAuth().then(
                 (err)=>{
                     console.log(err);
-                    res.status(401).send(err);
+                    res.status(401).send({success:false, message: 'Authorization Failed'});
                 },
                 (auth)=>googleapi.listEvents(auth, today.toISOString(), nextMonth.toISOString()))
             .then(
                 (err)=>{
                     console.error(err);
-                    res.status(500).send(err);
+                    res.status(500).send({success:false, message: String(err)});
                 },
                 (result) => {
                     const obj = googleapi.parseForMonth(result, year, month);
@@ -38,14 +38,14 @@ app.get('/timeslots',(req,res) => {
           .then(
                 (err)=>{
                     console.log(err);
-                    res.status(401).send(err);
+                    res.status(401).send({success:false, message: 'Authorization Failed'});
                 },
                 (auth)=>googleapi.listEvents(auth, today.toISOString(), tomorrow.toISOString()),
                 ) 
           .then(
                 (err)=>{
                     console.error(err);
-                    res.status(500).send(err);
+                    res.status(500).send({success:false, message: String(err)});
                 },
                 (result) => {
                     const obj = googleapi.parseForDay(result, year, month, day);
@@ -81,7 +81,7 @@ app.post('/book',(req,res)=>{
         return;
     }
     if(!googleapi.checkValidSlot(hour,minute)){
-        res.status(400).json({success:false, message: 'Cannot book time in the past'});
+        res.status(400).json({success:false, message: 'Invalid Time Slot'});
         return;
     }
     let endTime = new Date(year, month-1, day, hour+((minute+40)/60), (minute+40)%60);
@@ -90,14 +90,14 @@ app.post('/book',(req,res)=>{
           .then(
                 (err)=>{
                     console.log(err);
-                    res.status(401).send(err);
+                    res.status(401).send({success:false, message: 'Authorization Failed'});
                 },
                 (auth)=>googleapi.addEvents(auth, book_day.toISOString(), endTime.toISOString()),
                 ) 
           .then(
                 (err)=>{
                     console.error(err);
-                    res.status(500).send(err);
+                    res.status(500).send({success:false, message: String(err)});
                 },
                 (result) => {
                     console.log(result);
